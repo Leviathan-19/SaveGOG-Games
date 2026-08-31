@@ -68,8 +68,12 @@ async function runScraper() {
   const browser = await chromium.launch({
     headless: false,
     slowMo: 500,
+    channel: "msedge", // Usa Microsoft Edge (instalado por defecto en Windows)
   });
-  const context = await browser.newContext();
+  const context = await browser.newContext({
+    // Simulamos un User-Agent normal para que Cloudflare no bloquee la conexión
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  });
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
 
   const page = await context.newPage();
@@ -87,7 +91,11 @@ async function runScraper() {
     let links: string[] = [];
 
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+      // Esperar a que las peticiones de red terminen (útil para contenido cargado con JS)
+      await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
+      // Pausa explícita para asegurar que los elementos se rendericen
+      await page.waitForTimeout(5000);
 
       // Lógica para extraer los enlaces.
       // Buscar contenedores de descarga. Asumimos que hay botones o inputs.
