@@ -1,0 +1,15 @@
+Estos son los comandos para instalar las librerías necesarias en la carpeta del scraper:
+
+1. Asegúrate de estar dentro de la carpeta del scraper en tu terminal:
+   "cd scraper"
+
+2. Instala las dependencias principales (Express para la API y Playwright para el scraping):
+   "npm install express playwright"
+
+3. Instala las dependencias de TypeScript (necesarias para desarrollo):
+   "npm install typescript @types/express @types/node ts-node --save-dev"
+
+4. (Opcional pero recomendado) Instala los navegadores de Playwright:
+   "npx playwright install chromium"
+5. El comando para iniciar scraper es:
+   "npm start"
