@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "GOG Games Scraper",
+  "version": "1.0",
+  "description": "Scrapea enlaces de descarga de gog-games.to localmente",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://localhost:3000/*",
+    "https://gog-games.to/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://gog-games.to/game/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
