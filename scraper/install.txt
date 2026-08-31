@@ -13,3 +13,5 @@ Estos son los comandos para instalar las librerías necesarias en la carpeta del
    "npx playwright install chromium"
 5. El comando para iniciar scraper es:
    "npm start"
+6.Instala express cors @types/express:
+   "npm install express cors @types/express"
