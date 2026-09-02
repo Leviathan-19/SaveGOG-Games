@@ -1,10 +1,31 @@
 // Se ejecuta cuando la página termina de cargar
 window.addEventListener("load", () => {
   console.log("GOG Scraper Content Script loaded");
-  
-  // Esperar un poco para que JS dinámico de la página cargue los botones si es necesario
-  setTimeout(extractLinks, 5000);
+  startPolling();
 });
+
+function startPolling() {
+  const maxAttempts = 30; // Máximo 30 segundos de espera
+  let attempts = 0;
+
+  const intervalId = setInterval(() => {
+    attempts++;
+    const links = extractLinks();
+    
+    // Si encontramos al menos un enlace o si superamos el límite de tiempo
+    if (links.length > 0 || attempts >= maxAttempts) {
+      clearInterval(intervalId);
+      
+      console.log(`Búsqueda finalizada en intento ${attempts}. Enlaces encontrados:`, links);
+
+      // Enviar los enlaces al background script
+      chrome.runtime.sendMessage({
+        action: "links_found",
+        links: links
+      });
+    }
+  }, 1000); // Revisar cada 1 segundo (1000 ms)
+}
 
 function extractLinks() {
   const foundLinks = new Set();
@@ -32,12 +53,5 @@ function extractLinks() {
     }
   }
   
-  const linksArray = Array.from(foundLinks);
-  console.log("Enlaces encontrados:", linksArray);
-
-  // Enviar los enlaces al background script
-  chrome.runtime.sendMessage({
-    action: "links_found",
-    links: linksArray
-  });
+  return Array.from(foundLinks);
 }
